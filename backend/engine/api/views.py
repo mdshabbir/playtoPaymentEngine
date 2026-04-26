@@ -63,7 +63,8 @@ class DashboardView(APIView):
     def get(self, request):
         merchant = get_request_merchant(request)
         if merchant is None:
-            return Response({"detail": "X-Merchant-ID header required"}, status=status.HTTP_400_BAD_REQUEST)
+            # Health checks from hosting platforms may not include merchant headers.
+            return Response({"status": "ok"}, status=status.HTTP_200_OK)
 
         balances = get_balances(merchant)
         recent_ledger = merchant.ledger_entries.order_by("-created_at")[:20]
@@ -90,4 +91,3 @@ class PayoutListView(APIView):
         if status_filter:
             payouts = payouts.filter(status=status_filter)
         return Response({"results": PayoutSerializer(payouts[:100], many=True).data})
-
