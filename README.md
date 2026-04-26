@@ -63,6 +63,7 @@ The frontend is a Vite app and needs a deployed backend URL in production.
 Set this in Vercel project environment variables:
 - `VITE_API_BASE=https://<your-backend-domain>/api/v1`
 - `VITE_MERCHANT_ID=1`
+- Important: after adding/updating Vercel env vars, trigger a new deployment. Vite injects these at build time.
 
 Without `VITE_API_BASE`, the app will only work on localhost and production fetches will fail.
 

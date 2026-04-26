@@ -29,7 +29,9 @@ function resolveApiBase() {
   const isLocalHost = hostname === "localhost" || hostname === "127.0.0.1";
   if (isLocalHost) return "http://localhost:8000/api/v1";
 
-  throw new Error("Missing VITE_API_BASE for deployed frontend");
+  // Production safety fallback for deployed Vercel frontend.
+  // Env var should still be configured, but this avoids hard failure if missing.
+  return "https://playto-payment-engine-api.onrender.com/api/v1";
 }
 
 const API_BASE = resolveApiBase();
