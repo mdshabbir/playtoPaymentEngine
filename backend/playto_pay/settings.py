@@ -16,6 +16,9 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-secret-key")
 DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
 ALLOWED_HOSTS = get_env_list("DJANGO_ALLOWED_HOSTS", "*")
 
+if not DEBUG and (not SECRET_KEY or SECRET_KEY == "dev-only-secret-key"):
+    raise RuntimeError("DJANGO_SECRET_KEY must be set to a strong value in production")
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -114,6 +117,9 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     "x-merchant-id",
     "idempotency-key",
 ]
-CSRF_TRUSTED_ORIGINS = get_env_list("CSRF_TRUSTED_ORIGINS")
+CSRF_TRUSTED_ORIGINS = get_env_list(
+    "CSRF_TRUSTED_ORIGINS",
+    "http://127.0.0.1:5173,http://localhost:5173",
+)
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

@@ -76,11 +76,25 @@ Deploy flow:
    - a web service: `playto-payment-engine-api`
    - a Postgres database: `playto-payment-engine-db`
 4. In the Render service environment, set:
-   - `CORS_ALLOWED_ORIGINS=https://<your-vercel-site>.vercel.app`
-   - `CSRF_TRUSTED_ORIGINS=https://playto-payment-engine-api.onrender.com,https://<your-vercel-site>.vercel.app`
+   - `CORS_ALLOWED_ORIGINS=https://playto-payment-engine.vercel.app`
+   - `CSRF_TRUSTED_ORIGINS=https://playto-payment-engine-api.onrender.com,https://playto-payment-engine.vercel.app`
+   - `DJANGO_ALLOWED_HOSTS=playto-payment-engine-api.onrender.com`
+   - `DJANGO_SECRET_KEY=<strong-secret-key>`
 5. After deploy, copy the Render backend URL and set this in Vercel:
    - `VITE_API_BASE=https://playto-payment-engine-api.onrender.com/api/v1`
    - `VITE_MERCHANT_ID=1`
+
+## Django Secret Key
+- `DJANGO_SECRET_KEY` is Django's cryptographic signing secret.
+- It is used for signed cookies, CSRF/session token signing, password reset tokens, and other security-sensitive signatures.
+- Never use `dev-only-secret-key` in production and never commit a real secret key to git.
+
+Generate one locally:
+- `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`
+
+Then set it as an environment variable in your backend host (Render):
+- Key: `DJANGO_SECRET_KEY`
+- Value: output of the command above
 
 Notes:
 - `preDeployCommand` runs migrations and seeds demo merchants safely.
