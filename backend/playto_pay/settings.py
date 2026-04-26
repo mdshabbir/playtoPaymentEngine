@@ -113,6 +113,10 @@ CORS_ALLOWED_ORIGINS = get_env_list(
     "CORS_ALLOWED_ORIGINS",
     "http://127.0.0.1:5173,http://localhost:5173",
 )
+CORS_ALLOWED_ORIGIN_REGEXES = get_env_list(
+    "CORS_ALLOWED_ORIGIN_REGEXES",
+    r"^https://playto-payment-engine-[a-z0-9-]+\.vercel\.app$",
+)
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "x-merchant-id",
     "idempotency-key",
