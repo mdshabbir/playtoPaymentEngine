@@ -1,24 +1,48 @@
+import { Wallet, Lock } from 'lucide-react';
+
 type Props = {
   availableBalancePaise: number;
   heldBalancePaise: number;
 };
 
 function formatRupees(paise: number) {
-  return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(paise / 100);
+  return new Intl.NumberFormat("en-IN", { 
+    style: "currency", 
+    currency: "INR",
+    maximumFractionDigits: 0 
+  }).format(paise / 100);
 }
 
 export function BalanceCards({ availableBalancePaise, heldBalancePaise }: Props) {
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
-      <div className="rounded-xl border bg-white p-5 shadow-sm">
-        <p className="text-sm text-slate-500">Available balance</p>
-        <p className="mt-2 text-2xl font-semibold text-emerald-700">{formatRupees(availableBalancePaise)}</p>
+    <div className="grid gap-6 sm:grid-cols-2">
+      <div className="card group hover:border-brand/30 transition-all duration-300">
+        <div className="flex items-center justify-between mb-4">
+          <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <Wallet size={24} />
+          </div>
+          <span className="text-xs font-medium bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full">Available</span>
+        </div>
+        <p className="text-sm font-medium text-slate-500 mb-1">Available Balance</p>
+        <p className="text-3xl font-bold text-slate-900 tracking-tight">{formatRupees(availableBalancePaise)}</p>
+        <div className="mt-4 pt-4 border-t border-slate-50 flex items-center text-xs text-slate-400">
+          <span>Ready for instant payout</span>
+        </div>
       </div>
-      <div className="rounded-xl border bg-white p-5 shadow-sm">
-        <p className="text-sm text-slate-500">Held balance</p>
-        <p className="mt-2 text-2xl font-semibold text-amber-700">{formatRupees(heldBalancePaise)}</p>
+
+      <div className="card group hover:border-brand/30 transition-all duration-300">
+        <div className="flex items-center justify-between mb-4">
+          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <Lock size={24} />
+          </div>
+          <span className="text-xs font-medium bg-amber-100 text-amber-700 px-2.5 py-0.5 rounded-full">Pending</span>
+        </div>
+        <p className="text-sm font-medium text-slate-500 mb-1">Held Balance</p>
+        <p className="text-3xl font-bold text-slate-900 tracking-tight">{formatRupees(heldBalancePaise)}</p>
+        <div className="mt-4 pt-4 border-t border-slate-50 flex items-center text-xs text-slate-400">
+          <span>Processing in background</span>
+        </div>
       </div>
     </div>
   );
 }
-
