@@ -59,3 +59,4 @@ yarn-error.log*
 # (Add project specific ignores here)
 
 .stories
+backend/celerybeat-schedule
