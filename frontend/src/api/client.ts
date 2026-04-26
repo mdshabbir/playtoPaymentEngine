@@ -21,7 +21,18 @@ export type DashboardResponse = {
   }>;
 };
 
-const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000/api/v1";
+function resolveApiBase() {
+  const configuredBase = import.meta.env.VITE_API_BASE;
+  if (configuredBase) return configuredBase;
+
+  const hostname = window.location.hostname;
+  const isLocalHost = hostname === "localhost" || hostname === "127.0.0.1";
+  if (isLocalHost) return "http://localhost:8000/api/v1";
+
+  throw new Error("Missing VITE_API_BASE for deployed frontend");
+}
+
+const API_BASE = resolveApiBase();
 const MERCHANT_ID = import.meta.env.VITE_MERCHANT_ID ?? "1";
 
 export async function getDashboard(): Promise<DashboardResponse> {
@@ -47,4 +58,3 @@ export async function createPayout(input: { amount_paise: number; bank_account_i
   if (!res.ok) throw new Error(data.detail ?? "Payout request failed");
   return data;
 }
-
