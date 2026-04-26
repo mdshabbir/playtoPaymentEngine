@@ -1,7 +1,7 @@
 import threading
 import uuid
 
-from django.db import connection
+from django.db import connection, connections
 from django.test import TransactionTestCase
 from rest_framework.test import APIClient
 
@@ -27,15 +27,19 @@ class ConcurrencyTests(TransactionTestCase):
         )
 
     def _request(self, results: list[int], idx: int, barrier: threading.Barrier):
-        client = APIClient()
-        headers = {
-            "HTTP_X_MERCHANT_ID": str(self.merchant.id),
-            "HTTP_IDEMPOTENCY_KEY": str(uuid.uuid4()),
-        }
-        payload = {"amount_paise": 6_000, "bank_account_id": self.bank.id}
-        barrier.wait()
-        response = client.post("/api/v1/payouts", payload, format="json", **headers)
-        results[idx] = response.status_code
+        try:
+            client = APIClient()
+            headers = {
+                "HTTP_X_MERCHANT_ID": str(self.merchant.id),
+                "HTTP_IDEMPOTENCY_KEY": str(uuid.uuid4()),
+            }
+            payload = {"amount_paise": 6_000, "bank_account_id": self.bank.id}
+            barrier.wait()
+            response = client.post("/api/v1/payouts", payload, format="json", **headers)
+            results[idx] = response.status_code
+        finally:
+            # Ensure thread-owned DB connections are released after request execution.
+            connections.close_all()
 
     def test_two_parallel_payouts_only_one_succeeds(self):
         if not connection.features.has_select_for_update:
@@ -52,4 +56,3 @@ class ConcurrencyTests(TransactionTestCase):
 
         self.assertCountEqual(results, [201, 409])
         self.assertEqual(Payout.objects.count(), 1)
-

@@ -107,12 +107,15 @@ def _create_or_lock_idempotency_row(
 ) -> IdempotencyKey:
     expires_at = now + timedelta(hours=24)
     try:
-        return IdempotencyKey.objects.create(
-            merchant=merchant,
-            key=idempotency_key,
-            request_fingerprint=fingerprint,
-            expires_at=expires_at,
-        )
+        # Use a nested transaction savepoint so an insert race rollback
+        # doesn't break the caller's outer atomic block.
+        with transaction.atomic():
+            return IdempotencyKey.objects.create(
+                merchant=merchant,
+                key=idempotency_key,
+                request_fingerprint=fingerprint,
+                expires_at=expires_at,
+            )
     except IntegrityError:
         existing = IdempotencyKey.objects.select_for_update().get(merchant=merchant, key=idempotency_key)
         if existing.expires_at < now:
@@ -218,4 +221,3 @@ def retry_stuck_processing_payouts(max_attempts: int = 3) -> int:
         _simulate_settlement(payout_id)
         processed += 1
     return processed
-
