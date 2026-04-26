@@ -66,6 +66,26 @@ Set this in Vercel project environment variables:
 
 Without `VITE_API_BASE`, the app will only work on localhost and production fetches will fail.
 
+## Backend Deployment (Render)
+This repo includes a `render.yaml` blueprint for the Django API and Postgres database.
+
+Deploy flow:
+1. Push the latest repo state to GitHub.
+2. In Render, choose `New -> Blueprint` and connect this repository.
+3. Render will create:
+   - a web service: `playto-payment-engine-api`
+   - a Postgres database: `playto-payment-engine-db`
+4. In the Render service environment, set:
+   - `CORS_ALLOWED_ORIGINS=https://<your-vercel-site>.vercel.app`
+   - `CSRF_TRUSTED_ORIGINS=https://playto-payment-engine-api.onrender.com,https://<your-vercel-site>.vercel.app`
+5. After deploy, copy the Render backend URL and set this in Vercel:
+   - `VITE_API_BASE=https://playto-payment-engine-api.onrender.com/api/v1`
+   - `VITE_MERCHANT_ID=1`
+
+Notes:
+- `preDeployCommand` runs migrations and seeds demo merchants safely.
+- The deployed API uses `gunicorn`, `dj-database-url`, and `whitenoise` for production readiness.
+
 ## Notes
 - All money amounts are stored as integer paise (`BigIntegerField`).
 - Ledger is append-only and used to derive balances.
