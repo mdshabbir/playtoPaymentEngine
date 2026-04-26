@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/v1/(.*)",
-      "destination": "https://playto-payment-engine-api.onrender.com/api/v1/$1"
-    }
-  ]
-}
