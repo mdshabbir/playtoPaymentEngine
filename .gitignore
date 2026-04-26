@@ -60,4 +60,4 @@ yarn-error.log*
 
 .stories
 backend/celerybeat-schedule
-scripts
+./scripts
