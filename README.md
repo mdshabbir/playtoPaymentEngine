@@ -66,6 +66,8 @@ Set this in Vercel project environment variables:
 - Important: after adding/updating Vercel env vars, trigger a new deployment. Vite injects these at build time.
 
 Without `VITE_API_BASE`, the app will only work on localhost and production fetches will fail.
+This repo also includes a Vercel rewrite for `/api/v1/*` to the Render backend so browser-side CORS is avoided.
+If you use the rewrite path, `VITE_API_BASE` can be omitted in production.
 
 ## Backend Deployment (Render)
 This repo includes a `render.yaml` blueprint for the Django API and Postgres database.

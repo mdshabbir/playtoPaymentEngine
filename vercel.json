@@ -1,5 +1,11 @@
 {
   "installCommand": "cd frontend && npm install",
   "buildCommand": "cd frontend && npm run build",
-  "outputDirectory": "frontend/dist"
+  "outputDirectory": "frontend/dist",
+  "rewrites": [
+    {
+      "source": "/api/v1/(.*)",
+      "destination": "https://playto-payment-engine-api.onrender.com/api/v1/$1"
+    }
+  ]
 }

@@ -29,9 +29,9 @@ function resolveApiBase() {
   const isLocalHost = hostname === "localhost" || hostname === "127.0.0.1";
   if (isLocalHost) return "http://localhost:8000/api/v1";
 
-  // Production safety fallback for deployed Vercel frontend.
-  // Env var should still be configured, but this avoids hard failure if missing.
-  return "https://playto-payment-engine-api.onrender.com/api/v1";
+  // In production, default to same-origin API path so Vercel rewrites can proxy
+  // to the backend and avoid browser CORS issues.
+  return "/api/v1";
 }
 
 const API_BASE = resolveApiBase();
