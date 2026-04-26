@@ -32,9 +32,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -115,7 +115,7 @@ CORS_ALLOWED_ORIGINS = get_env_list(
 )
 CORS_ALLOWED_ORIGIN_REGEXES = get_env_list(
     "CORS_ALLOWED_ORIGIN_REGEXES",
-    r"^https://playto-payment-engine-[a-z0-9-]+\.vercel\.app$",
+    r"^https://.*\.vercel\.app$",
 )
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "x-merchant-id",

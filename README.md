@@ -78,7 +78,7 @@ Deploy flow:
    - a Postgres database: `playto-payment-engine-db`
 4. In the Render service environment, set:
    - `CORS_ALLOWED_ORIGINS=https://playto-payment-engine.vercel.app`
-   - `CORS_ALLOWED_ORIGIN_REGEXES=^https://playto-payment-engine-[a-z0-9-]+\.vercel\.app$` (allows Vercel preview deployment URLs)
+   - `CORS_ALLOWED_ORIGIN_REGEXES=^https://.*\.vercel\.app$` (allows Vercel preview deployment URLs)
    - `CSRF_TRUSTED_ORIGINS=https://playto-payment-engine-api.onrender.com,https://playto-payment-engine.vercel.app,https://*.vercel.app`
    - `DJANGO_ALLOWED_HOSTS=playto-payment-engine-api.onrender.com`
    - `DJANGO_SECRET_KEY=<strong-secret-key>`
