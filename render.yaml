@@ -4,8 +4,7 @@ services:
     runtime: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt
-    preDeployCommand: python manage.py migrate && python manage.py seed_merchants
-    startCommand: gunicorn playto_pay.wsgi:application
+    startCommand: python manage.py migrate && python manage.py seed_merchants && gunicorn playto_pay.wsgi:application
     envVars:
       - key: DJANGO_DEBUG
         value: "0"

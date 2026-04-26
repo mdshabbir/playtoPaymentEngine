@@ -101,7 +101,7 @@ Then set it as an environment variable in your backend host (Render):
 - Value: output of the command above
 
 Notes:
-- `preDeployCommand` runs migrations and seeds demo merchants safely.
+- On Render free plans, `preDeployCommand` is skipped. This project runs migrations + seed in `startCommand` for reliability.
 - The deployed API uses `gunicorn`, `dj-database-url`, and `whitenoise` for production readiness.
 
 ## Notes
