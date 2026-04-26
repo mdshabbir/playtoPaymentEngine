@@ -1,4 +1,4 @@
-import { Clock, CheckCircle2, XCircle, AlertCircle, ArrowUpRight, History } from 'lucide-react';
+import { Clock, CheckCircle2, XCircle, AlertCircle, ArrowUpRight } from 'lucide-react';
 
 type Payout = {
   id: string;
@@ -26,81 +26,79 @@ const statusConfig: Record<string, { icon: any, class: string, label: string }> 
 
 export function PayoutHistoryTable({ items }: { items: Payout[] }) {
   return (
-    <div className="card overflow-hidden">
-      <div className="flex items-center justify-between mb-6 px-2">
-        <h2 className="text-lg md:text-xl font-bold text-slate-900 flex items-center gap-2">
+    <div className="card">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
           <History className="text-brand" size={20} />
           Payout History
         </h2>
-        <button className="text-xs md:text-sm font-medium text-brand hover:underline flex items-center gap-1">
+        <button className="text-sm font-medium text-brand hover:underline flex items-center gap-1">
           View All <ArrowUpRight size={14} />
         </button>
       </div>
 
-      <div className="relative">
-        <div className="overflow-x-auto -mx-6 px-6">
-          <table className="min-w-[600px] md:min-w-full">
-            <thead>
-              <tr className="bg-slate-50/50 border-y border-slate-100">
-                <th className="px-6 py-3 text-left text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-wider">Reference</th>
-                <th className="px-6 py-3 text-left text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
-                <th className="px-6 py-3 text-left text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {items.map((item) => {
-                const config = statusConfig[item.status] || statusConfig.pending;
-                const Icon = config.icon;
-                return (
-                  <tr key={item.id} className="hover:bg-slate-50/30 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-mono text-slate-400">#</span>
-                      <span className="text-sm font-medium text-slate-600">{item.id.slice(0, 8)}...</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-bold text-slate-900">{formatRupees(item.amount_paise)}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex flex-col">
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] md:text-xs font-semibold border ${config.class}`}>
-                          <Icon size={12} />
-                          {config.label}
-                        </span>
-                        {item.failure_reason && (
-                          <span className="mt-1 flex items-center gap-1 text-[10px] text-red-500 font-medium max-w-[150px] truncate">
-                            <AlertCircle size={10} />
-                            {item.failure_reason}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-[10px] md:text-xs text-slate-500">
-                        {new Date(item.updated_at).toLocaleDateString(undefined, {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
+      <div className="overflow-x-auto -mx-6">
+        <table className="min-w-full">
+          <thead>
+            <tr className="bg-slate-50/50 border-y border-slate-100">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Reference</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-50">
+            {items.map((item) => {
+              const config = statusConfig[item.status] || statusConfig.pending;
+              const Icon = config.icon;
+              return (
+                <tr key={item.id} className="hover:bg-slate-50/30 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="text-sm font-mono text-slate-400">#</span>
+                    <span className="text-sm font-medium text-slate-600">{item.id.slice(0, 8)}...</span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="text-sm font-bold text-slate-900">{formatRupees(item.amount_paise)}</span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex flex-col">
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${config.class}`}>
+                        <Icon size={12} />
+                        {config.label}
                       </span>
-                    </td>
-                  </tr>
-                );
-              })}
-              {items.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="px-6 py-10 text-center text-sm text-slate-400 italic">
-                    No payout history available yet.
+                      {item.failure_reason && (
+                        <span className="mt-1 flex items-center gap-1 text-[10px] text-red-500 font-medium">
+                          <AlertCircle size={10} />
+                          {item.failure_reason}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="text-xs text-slate-500">
+                      {new Date(item.updated_at).toLocaleDateString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-        {/* Scroll shadow indicator */}
-        <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none md:hidden" />
+              );
+            })}
+            {items.length === 0 && (
+              <tr>
+                <td colSpan={4} className="px-6 py-10 text-center text-sm text-slate-400 italic">
+                  No payout history available yet.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );
 }
+
+import { History } from 'lucide-react';

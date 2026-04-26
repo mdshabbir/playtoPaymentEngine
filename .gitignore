@@ -31,12 +31,6 @@ staticfiles/
 
 # Environments
 .env
-.env.*
-!.env.example
-!backend/.env.render.example
-!frontend/.env.example
-backend/.env
-frontend/.env
 .venv
 env/
 venv/

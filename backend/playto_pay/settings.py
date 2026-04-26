@@ -115,7 +115,7 @@ CORS_ALLOWED_ORIGINS = get_env_list(
 )
 CORS_ALLOWED_ORIGIN_REGEXES = get_env_list(
     "CORS_ALLOWED_ORIGIN_REGEXES",
-    "",
+    r"^https://.*\.vercel\.app$",
 )
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "x-merchant-id",
