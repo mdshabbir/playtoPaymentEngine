@@ -35,19 +35,36 @@ function resolveApiBase() {
 }
 
 const API_BASE = resolveApiBase();
+const DIRECT_BACKEND_BASE = "https://playto-payment-engine-api.onrender.com/api/v1";
 const MERCHANT_ID = import.meta.env.VITE_MERCHANT_ID ?? "1";
 
+async function fetchJsonWithFallback<T>(path: string, init: RequestInit): Promise<{ res: Response; data: T }> {
+  const primaryRes = await fetch(`${API_BASE}${path}`, init);
+  const contentType = primaryRes.headers.get("content-type") ?? "";
+
+  // Some Vercel deployments can return index.html for /api paths when rewrites
+  // are not applied yet. Retry against backend directly in that scenario.
+  if (API_BASE === "/api/v1" && contentType.includes("text/html")) {
+    const fallbackRes = await fetch(`${DIRECT_BACKEND_BASE}${path}`, init);
+    const fallbackData = await fallbackRes.json();
+    return { res: fallbackRes, data: fallbackData as T };
+  }
+
+  const primaryData = await primaryRes.json();
+  return { res: primaryRes, data: primaryData as T };
+}
+
 export async function getDashboard(): Promise<DashboardResponse> {
-  const res = await fetch(`${API_BASE}/dashboard`, {
+  const { res, data } = await fetchJsonWithFallback<DashboardResponse>("/dashboard", {
     headers: { "X-Merchant-ID": MERCHANT_ID }
   });
   if (!res.ok) throw new Error("Failed to load dashboard");
-  return res.json();
+  return data;
 }
 
 export async function createPayout(input: { amount_paise: number; bank_account_id: number }) {
   const idemKey = crypto.randomUUID();
-  const res = await fetch(`${API_BASE}/payouts`, {
+  const { res, data } = await fetchJsonWithFallback<{ detail?: string }>("/payouts", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -56,7 +73,6 @@ export async function createPayout(input: { amount_paise: number; bank_account_i
     },
     body: JSON.stringify(input)
   });
-  const data = await res.json();
   if (!res.ok) throw new Error(data.detail ?? "Payout request failed");
   return data;
 }
